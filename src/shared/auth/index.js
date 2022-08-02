@@ -6,7 +6,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-export const handleSignin = async (payload) => {
+export const login = async (payload) => {
   try {
     const { data } = await axios.post(`${URL}v1/admin/auth/`, payload, headers);
     localStorage.setItem("stackstudioToken", data.token);
@@ -16,9 +16,7 @@ export const handleSignin = async (payload) => {
   }
 };
 
-const logout = () => {
+export const logout = () => {
   // clear localstorage
   localStorage.removeItem("stackstudioToken")
-  // go to signin page
-  
 };

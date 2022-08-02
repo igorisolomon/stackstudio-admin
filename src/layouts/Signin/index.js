@@ -13,7 +13,7 @@ import IllustrationLayout from "components/IllustrationLayout";
 
 // Image
 import chat from "assets/images/illustrations/chat.png";
-import { handleSignin } from "shared/auth";
+import { login } from "shared/auth";
 import SoftSnackbar from "components/SoftSnackbar";
 
 function Signin() {
@@ -64,7 +64,7 @@ function Signin() {
   };
 
   const handleSubmit = async () => {
-    const response = await handleSignin({ ...state });
+    const response = await login({ ...state });
     response ? (
       openSuccessSB(),
       navigate('/')
