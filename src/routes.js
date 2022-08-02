@@ -50,13 +50,13 @@ const routes = [
   },
   {
     key: "createBlog",
-    route: "/blogs/create",
+    route: "/blogs/blog/create",
     component: <CreateBlog />,
     noCollapse: true,
   },
   {
     key: "createPodcast",
-    route: "/podcasts/create",
+    route: "/podcasts/podcast/create",
     component: <CreatePodcast />,
     noCollapse: true,
   },
