@@ -44,7 +44,7 @@ const Company = () => {
   const [edit, setEdit] = useState("edit");
 
   useEffect(() => {
-    // fetch About
+    // fetch about
     const fetchAbout = async () => {
       const { data: company } = await fetchData("v1/admin/about/");
       const { data: podcasts } = await fetchData("v1/admin/podcast/");

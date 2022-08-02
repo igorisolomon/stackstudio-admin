@@ -7,13 +7,63 @@ import SoftSelect from "components/SoftSelect";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ReactQuill from "react-quill";
+import { postData } from "shared/data";
 
 const CreateBlog = () => {
-  const handleChange = (content, delta, source, editor) => {
-    console.log(editor.getText());
+  const sampleBlog = {
+    published_date: "",
+    title: "",
+    is_published: true,
+    body_html: "",
+    body: "",
+  };
+  const [blog, setBlog] = useState(sampleBlog);
+
+  // useEffect(() => {
+  //   // fetch blog
+  //   const fetchBlog = async () => {
+  //     const { data: blog } = await fetchData("v1/admin/blog/");
+
+  //     setBlog({ ...blog });
+  //   };
+  //   fetchBlog();
+  // }, []);
+
+  const handleBlog = (content, delta, source, editor) => {
+    // get state
+    const initialBlog = { ...blog };
+    initialBlog.body = editor.getText();
+    initialBlog.body_html = editor.getHTML();
+
+    setBlog({ ...initialBlog });
+  };
+
+  const handleText = ({ target }) => {
+    const initialState = { ...blog };
+    initialState[target.name] = target.value;
+
+    setBlog({ ...initialState });
+  };
+
+  const handleDate = (e) => {
+    const initialState = { ...blog };
+    initialState.published_date = e[0].toISOString();
+
+    setBlog({ ...initialState });
+  };
+
+  const handleCheck = ({ target }) => {
+    const initialState = { ...blog };
+    initialState.is_published = !initialState.is_published;
+
+    setBlog({ ...initialState });
+  };
+
+  const handleSubmit = () => {
+    postData('v1/admin/blog/', {...blog}).then((res) => console.log(res));
   };
 
   return (
@@ -40,7 +90,11 @@ const CreateBlog = () => {
                       Title
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput
+                    name="title"
+                    value={blog.title}
+                    onChange={handleText}
+                  />
 
                   <Grid container spacing={3}>
                     <Grid item xs={6}>
@@ -56,8 +110,11 @@ const CreateBlog = () => {
                           </SoftTypography>
                         </SoftBox>
                         <SoftDatePicker
-                        // value={startDate}
-                        // onChange={handleSetStartDate}
+                          // value={startDate}
+                          // onChange={handleSetStartDate}
+                          name="published_date"
+                          value={blog.published_date}
+                          onChange={handleDate}
                         />
                       </SoftBox>
                     </Grid>
@@ -69,8 +126,8 @@ const CreateBlog = () => {
                       </SoftBox>
                       <SoftBox ml={0.5} mb={0.25} mt={1}>
                         <Switch
-                          checked={true}
-                          //   onChange={handleChange}
+                          checked={blog.is_published}
+                            onChange={handleCheck}
                           inputProps={{ "aria-label": "controlled" }}
                         />
                       </SoftBox>
@@ -84,17 +141,14 @@ const CreateBlog = () => {
                   </SoftBox>
 
                   <div style={{ minHeight: 300 }}>
-                    <ReactQuill style={{ minHeight: 300 }} value={"Hey"} onChange={handleChange} />
+                    <ReactQuill style={{ minHeight: 300 }} value={blog.body_html} onChange={handleBlog} />
                   </div>
                   {/* <SoftInput /> */}
                 </SoftBox>
 
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  <SoftBox mr={1}>
-                    <SoftButton color="light">cancel</SoftButton>
-                  </SoftBox>
-                  <SoftButton variant="gradient" color="info">
-                    create project
+                  <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
+                    create
                   </SoftButton>
                 </SoftBox>
               </SoftBox>

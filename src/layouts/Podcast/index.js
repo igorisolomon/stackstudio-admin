@@ -95,11 +95,8 @@ const CreatePodcast = () => {
                 </SoftBox>
 
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  <SoftBox mr={1}>
-                    <SoftButton color="light">cancel</SoftButton>
-                  </SoftBox>
                   <SoftButton variant="gradient" color="info">
-                    Create podcast
+                    Create
                   </SoftButton>
                 </SoftBox>
               </SoftBox>
