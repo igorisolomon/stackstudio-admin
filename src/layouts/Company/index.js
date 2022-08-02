@@ -1,5 +1,6 @@
-// import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { ThreeDots } from "react-loader-spinner";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -18,15 +19,97 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
 
 import ReactQuill from "react-quill";
-
+import { fetchData } from "shared/data";
+import { updateData } from "shared/data";
 
 const Company = () => {
-  
-  const handleChange = (content, delta, source, editor) => {
-    console.log(editor.getText());
+  const aboutSample = {
+    id: "",
+    name: "",
+    logo: null,
+    podcast_title: "",
+    google_podcast: "",
+    about: "",
+    about_html: "",
+    apple_podcast: "",
+    spotify_podcast: "",
+    intro_title: "",
+    intro_description: "",
+    intro_description_html: "",
+    featured_podcast: [],
   };
 
-  return (
+  const [about, setAbout] = useState(aboutSample);
+  const [podcasts, setPodcasts] = useState([]);
+  const [disable, setDisable] = useState(true);
+  const [edit, setEdit] = useState("edit");
+
+  useEffect(() => {
+    // fetch About
+    const fetchAbout = async () => {
+      const { data: company } = await fetchData("v1/admin/about/");
+      const { data: podcasts } = await fetchData("v1/admin/podcast/");
+
+      setAbout({ ...company });
+      setPodcasts(podcasts);
+    };
+    fetchAbout();
+  }, []);
+
+  const handleBlog = (content, delta, source, editor) => {
+    // get state
+    const company = { ...about };
+    company.about = editor.getText();
+    company.about_html = editor.getHTML();
+
+    setAbout({ ...company });
+  };
+
+  const handleOption = (e, featureIndex) => {
+    // get state
+    const company = { ...about };
+    company.featured_podcast[featureIndex] = e.value;
+
+    setAbout({ ...company });
+  };
+   const handleText = ({ target }) => {
+    const initialState = { ...about };
+    initialState[target.name] = target.value;
+
+    setAbout({ ...initialState });
+   }
+
+  const handleEdit = () => {
+    if (disable) {
+      setDisable(!disable);
+      setEdit("Update");
+    } else {
+      setDisable(!disable);
+      setEdit("Edit");
+
+      // updateServer
+      updateData(`v1/admin/about/${about.id}/`, {...about}).then(
+        res=>console.log(res)
+      )
+      // console.log(about);
+    }
+  };
+
+  const showLoader = (
+    <div className="App-centralize">
+      <ThreeDots
+        height="80"
+        width="80"
+        radius="9"
+        color="#000000"
+        ariaLabel="three-dots-loading"
+        wrapperStyle={{}}
+        visible={true}
+      />
+    </div>
+  );
+
+  const loadPage = (
     <DashboardLayout>
       <DashboardNavbar />
       {/* <Navbar /> */}
@@ -53,14 +136,14 @@ const Company = () => {
                       Company Name
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput name="name" value={about.name} disabled={disable} onChange={handleText} />
 
-                  <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
+                  {/* <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
                       Logo
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput value={about.logo} /> */}
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
@@ -69,7 +152,12 @@ const Company = () => {
                   </SoftBox>
 
                   <div style={{ minHeight: 300 }}>
-                    <ReactQuill style={{ minHeight: 300 }} value={"Hey"} onChange={handleChange} />
+                    <ReactQuill
+                      style={{ minHeight: 300 }}
+                      value={about.about_html}
+                      onChange={handleBlog}
+                      readOnly={disable}
+                    />
                   </div>
                   {/* <SoftInput /> */}
                 </SoftBox>
@@ -98,14 +186,15 @@ const Company = () => {
                           </SoftTypography>
                         </SoftBox>
                         <SoftSelect
-                          defaultValue={{ value: "clothing", label: "Clothing" }}
-                          options={[
-                            { value: "clothing", label: "Clothing" },
-                            { value: "electronics", label: "Electronics" },
-                            { value: "furniture", label: "Furniture" },
-                            { value: "others", label: "Others" },
-                            { value: "real estate", label: "Real Estate" },
-                          ]}
+                          defaultValue={{
+                            value: podcasts.find((x) => x?.id === about?.featured_podcast[0])?.id,
+                            label: podcasts.find((x) => x?.id === about?.id)?.title,
+                          }}
+                          options={podcasts.map((x) => {
+                            return { value: x.id, label: x.title };
+                          })}
+                          onChange={(e) => handleOption(e, 0)}
+                          isDisabled={disable}
                         />
                       </SoftBox>
                     </Grid>
@@ -122,14 +211,16 @@ const Company = () => {
                           </SoftTypography>
                         </SoftBox>
                         <SoftSelect
-                          defaultValue={{ value: "clothing", label: "Clothing" }}
-                          options={[
-                            { value: "clothing", label: "Clothing" },
-                            { value: "electronics", label: "Electronics" },
-                            { value: "furniture", label: "Furniture" },
-                            { value: "others", label: "Others" },
-                            { value: "real estate", label: "Real Estate" },
-                          ]}
+                          defaultValue={{
+                            value: podcasts.find((x) => x?.id === about?.featured_podcast[1])?.id,
+                            label: podcasts.find((x) => x?.id === about?.featured_podcast[1])
+                              ?.title,
+                          }}
+                          options={podcasts.map((x) => {
+                            return { value: x.id, label: x.title };
+                          })}
+                          onChange={(e) => handleOption(e, 1)}
+                          isDisabled={disable}
                         />
                       </SoftBox>
                     </Grid>
@@ -140,28 +231,36 @@ const Company = () => {
                       Google Podcast
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput
+                    name="google_podcast"
+                    value={about.google_podcast}
+                    disabled={disable} onChange={handleText}
+                  />
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
                       Apple Podcast
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput name="apple_podcast" value={about.apple_podcast} disabled={disable} onChange={handleText} />
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
                       Spotify Podcast
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput
+                    name="spotify_podcast"
+                    value={about.spotify_podcast}
+                    disabled={disable} onChange={handleText}
+                  />
                 </SoftBox>
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  <SoftBox mr={1}>
+                  {/* <SoftBox mr={1}>
                     <SoftButton color="light">cancel</SoftButton>
-                  </SoftBox>
-                  <SoftButton variant="gradient" color="info">
-                    create project
+                  </SoftBox> */}
+                  <SoftButton variant="gradient" color="info" onClick={handleEdit}>
+                    {edit}
                   </SoftButton>
                 </SoftBox>
               </SoftBox>
@@ -171,6 +270,8 @@ const Company = () => {
       </SoftBox>
     </DashboardLayout>
   );
+
+  return <>{about.about && podcasts[0] ? loadPage : showLoader}</>;
 };
 
 export default Company;

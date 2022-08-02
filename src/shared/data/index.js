@@ -13,3 +13,7 @@ export const fetchData = async (path) => {
 export const postData = async (path, payload) => {
     return await axios.post(`${URL}${path}`, payload, headers);
 };
+
+export const updateData = async (path, payload) => {
+  return await axios.patch(`${URL}${path}`, payload, headers);
+};
