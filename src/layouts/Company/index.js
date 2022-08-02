@@ -19,8 +19,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
 
 import ReactQuill from "react-quill";
-import { fetchData } from "shared/data";
-import { updateData } from "shared/data";
+import { fetchData, updateData } from "shared/data";
 
 const Company = () => {
   const aboutSample = {
@@ -72,12 +71,13 @@ const Company = () => {
 
     setAbout({ ...company });
   };
-   const handleText = ({ target }) => {
+
+  const handleText = ({ target }) => {
     const initialState = { ...about };
     initialState[target.name] = target.value;
 
     setAbout({ ...initialState });
-   }
+  };
 
   const handleEdit = () => {
     if (disable) {
@@ -88,9 +88,7 @@ const Company = () => {
       setEdit("Edit");
 
       // updateServer
-      updateData(`v1/admin/about/${about.id}/`, {...about}).then(
-        res=>console.log(res)
-      )
+      updateData(`v1/admin/about/${about.id}/`, { ...about }).then((res) => console.log(res));
       // console.log(about);
     }
   };
@@ -136,7 +134,12 @@ const Company = () => {
                       Company Name
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput name="name" value={about.name} disabled={disable} onChange={handleText} />
+                  <SoftInput
+                    name="name"
+                    value={about.name}
+                    disabled={disable}
+                    onChange={handleText}
+                  />
 
                   {/* <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
@@ -234,7 +237,8 @@ const Company = () => {
                   <SoftInput
                     name="google_podcast"
                     value={about.google_podcast}
-                    disabled={disable} onChange={handleText}
+                    disabled={disable}
+                    onChange={handleText}
                   />
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
@@ -242,7 +246,12 @@ const Company = () => {
                       Apple Podcast
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput name="apple_podcast" value={about.apple_podcast} disabled={disable} onChange={handleText} />
+                  <SoftInput
+                    name="apple_podcast"
+                    value={about.apple_podcast}
+                    disabled={disable}
+                    onChange={handleText}
+                  />
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
@@ -252,13 +261,11 @@ const Company = () => {
                   <SoftInput
                     name="spotify_podcast"
                     value={about.spotify_podcast}
-                    disabled={disable} onChange={handleText}
+                    disabled={disable}
+                    onChange={handleText}
                   />
                 </SoftBox>
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  {/* <SoftBox mr={1}>
-                    <SoftButton color="light">cancel</SoftButton>
-                  </SoftBox> */}
                   <SoftButton variant="gradient" color="info" onClick={handleEdit}>
                     {edit}
                   </SoftButton>

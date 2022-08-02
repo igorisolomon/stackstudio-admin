@@ -17,13 +17,88 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
 
 import ReactQuill from "react-quill";
+import { fetchData, updateData } from "shared/data";
+import { ThreeDots } from "react-loader-spinner";
+import { useEffect, useState } from "react";
 
 function Intro() {
-  const handleChange = (content, delta, source, editor) => {
-    console.log(editor.getText());
+  const aboutSample = {
+    id: "",
+    name: "",
+    logo: null,
+    podcast_title: "",
+    google_podcast: "",
+    about: "",
+    about_html: "",
+    apple_podcast: "",
+    spotify_podcast: "",
+    intro_title: "",
+    intro_description: "",
+    intro_description_html: "",
+    featured_podcast: [],
   };
 
-  return (
+  const [about, setAbout] = useState(aboutSample);
+  const [disable, setDisable] = useState(true);
+  const [edit, setEdit] = useState("edit");
+
+  useEffect(() => {
+    // fetch About
+    const fetchAbout = async () => {
+      const { data: company } = await fetchData("v1/admin/about/");
+      const { data: podcasts } = await fetchData("v1/admin/podcast/");
+
+      setAbout({ ...company });
+    };
+    fetchAbout();
+  }, []);
+
+  const handleBlog = (content, delta, source, editor) => {
+    // get state
+    const company = { ...about };
+    company.intro_description = editor.getText();
+    company.intro_description_html = editor.getHTML();
+
+    setAbout({ ...company });
+  };
+
+  const handleText = ({ target }) => {
+    const initialState = { ...about };
+    initialState[target.name] = target.value;
+
+    setAbout({ ...initialState });
+  };
+
+  const handleEdit = () => {
+    if (disable) {
+      setDisable(!disable);
+      setEdit("Update");
+    } else {
+      setDisable(!disable);
+      setEdit("Edit");
+
+      // updateServer
+      updateData(`v1/admin/about/${about.id}/`, { ...about }).then((res) => {
+        // call toast
+      });
+    }
+  };
+
+  const showLoader = (
+    <div className="App-centralize">
+      <ThreeDots
+        height="80"
+        width="80"
+        radius="9"
+        color="#000000"
+        ariaLabel="three-dots-loading"
+        wrapperStyle={{}}
+        visible={true}
+      />
+    </div>
+  );
+
+  const loadPage = (
     <DashboardLayout>
       <DashboardNavbar />
       {/* <Navbar /> */}
@@ -50,7 +125,12 @@ function Intro() {
                       Title
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput
+                    name="intro_title"
+                    value={about.intro_title}
+                    disabled={disable}
+                    onChange={handleText}
+                  />
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
@@ -59,17 +139,19 @@ function Intro() {
                   </SoftBox>
 
                   <div style={{ minHeight: 300 }}>
-                    <ReactQuill style={{ minHeight: 300 }} value={"Hey"} onChange={handleChange} />
+                    <ReactQuill
+                      style={{ minHeight: 300 }}
+                      value={about.intro_description_html}
+                      onChange={handleBlog}
+                      readOnly={disable}
+                    />
                   </div>
                   {/* <SoftInput /> */}
                 </SoftBox>
 
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  <SoftBox mr={1}>
-                    <SoftButton color="light">cancel</SoftButton>
-                  </SoftBox>
-                  <SoftButton variant="gradient" color="info">
-                    create project
+                  <SoftButton variant="gradient" color="info" onClick={handleEdit}>
+                    {edit}
                   </SoftButton>
                 </SoftBox>
               </SoftBox>
@@ -79,6 +161,8 @@ function Intro() {
       </SoftBox>
     </DashboardLayout>
   );
+
+  return <>{about.about ? loadPage : showLoader}</>;
 }
 
 export default Intro;
