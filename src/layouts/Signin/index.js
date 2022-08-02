@@ -74,7 +74,7 @@ function Signin() {
   return (
     <IllustrationLayout
       title="Sign In"
-      description="Enter your email and password to sign in"
+      description="Enter your username and password to sign in"
       illustration={{
         image: chat,
         title: '"Stack Studio"',

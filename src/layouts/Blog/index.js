@@ -10,6 +10,7 @@ import DashboardNavbar from "examples/Navbar";
 import React, { useEffect, useState } from "react";
 
 import ReactQuill from "react-quill";
+import { useNavigate } from "react-router-dom";
 import { postData } from "shared/data";
 
 const CreateBlog = () => {
@@ -20,6 +21,8 @@ const CreateBlog = () => {
     body_html: "",
     body: "",
   };
+
+  const navigate = useNavigate()
   const [blog, setBlog] = useState(sampleBlog);
 
   // useEffect(() => {
@@ -63,7 +66,9 @@ const CreateBlog = () => {
   };
 
   const handleSubmit = () => {
-    postData('v1/admin/blog/', {...blog}).then((res) => console.log(res));
+    postData('v1/admin/blog/', {...blog}).then((res) => {
+      navigate('/blogs/blog')
+    });
   };
 
   return (
@@ -110,8 +115,6 @@ const CreateBlog = () => {
                           </SoftTypography>
                         </SoftBox>
                         <SoftDatePicker
-                          // value={startDate}
-                          // onChange={handleSetStartDate}
                           name="published_date"
                           value={blog.published_date}
                           onChange={handleDate}
@@ -127,7 +130,7 @@ const CreateBlog = () => {
                       <SoftBox ml={0.5} mb={0.25} mt={1}>
                         <Switch
                           checked={blog.is_published}
-                            onChange={handleCheck}
+                          onChange={handleCheck}
                           inputProps={{ "aria-label": "controlled" }}
                         />
                       </SoftBox>

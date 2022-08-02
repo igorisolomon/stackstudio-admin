@@ -7,13 +7,59 @@ import SoftSelect from "components/SoftSelect";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
-import React from "react";
+import React, { useState } from "react";
 
 import ReactQuill from "react-quill";
+import { useNavigate } from "react-router-dom";
+import { postData } from "shared/data";
 
 const CreatePodcast = () => {
-  const handleChange = (content, delta, source, editor) => {
-    console.log(editor.getText());
+  const samplePodcast = {
+    published_date: "",
+    title: "",
+    is_published: true,
+    body_html: "",
+    body: "",
+    published_link: "",
+  };
+
+  const navigate = useNavigate();
+  const [podcast, setPodcast] = useState(samplePodcast);
+
+  const handleBody = (content, delta, source, editor) => {
+    // get state
+    const initialPodcast = { ...podcast };
+    initialPodcast.body = editor.getText();
+    initialPodcast.body_html = editor.getHTML();
+
+    setPodcast({ ...initialPodcast });
+  };
+
+  const handleText = ({ target }) => {
+    const initialState = { ...podcast };
+    initialState[target.name] = target.value;
+
+    setPodcast({ ...initialState });
+  };
+
+  const handleDate = (e) => {
+    const initialState = { ...podcast };
+    initialState.published_date = e[0].toISOString();
+
+    setPodcast({ ...initialState });
+  };
+
+  const handleCheck = ({ target }) => {
+    const initialState = { ...podcast };
+    initialState.is_published = !initialState.is_published;
+
+    setPodcast({ ...initialState });
+  };
+
+  const handleSubmit = () => {
+    postData("v1/admin/podcast/", { ...podcast }).then((res) => {
+      navigate("/podcasts/podcast");
+    });
   };
 
   return (
@@ -40,7 +86,7 @@ const CreatePodcast = () => {
                       Title
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput name="title" value={podcast.title} onChange={handleText} />
 
                   <Grid container spacing={3}>
                     <Grid item xs={6}>
@@ -56,8 +102,9 @@ const CreatePodcast = () => {
                           </SoftTypography>
                         </SoftBox>
                         <SoftDatePicker
-                        // value={startDate}
-                        // onChange={handleSetStartDate}
+                          name="published_date"
+                          value={podcast.published_date}
+                          onChange={handleDate}
                         />
                       </SoftBox>
                     </Grid>
@@ -69,8 +116,9 @@ const CreatePodcast = () => {
                       </SoftBox>
                       <SoftBox ml={0.5} mb={0.25} mt={1}>
                         <Switch
-                          checked={true}
-                          //   onChange={handleChange}
+                          checked={podcast.is_published}
+                          onChange={handleCheck}
+                          inputProps={{ "aria-label": "controlled" }}
                         />
                       </SoftBox>
                     </Grid>
@@ -81,7 +129,11 @@ const CreatePodcast = () => {
                       Podcast Link
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput />
+                  <SoftInput
+                    name="published_link"
+                    value={podcast.published_link}
+                    onChange={handleText}
+                  />
 
                   <SoftBox mt={3} ml={0.5} lineHeight={0} display="inline-block">
                     <SoftTypography component="label" variant="caption" fontWeight="bold">
@@ -90,12 +142,16 @@ const CreatePodcast = () => {
                   </SoftBox>
 
                   <div style={{ minHeight: 300 }}>
-                    <ReactQuill style={{ minHeight: 300 }} value={"Hey"} onChange={handleChange} />
+                    <ReactQuill
+                      style={{ minHeight: 300 }}
+                      value={podcast.body_html}
+                      onChange={handleBody}
+                    />
                   </div>
                 </SoftBox>
 
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  <SoftButton variant="gradient" color="info">
+                  <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
                     Create
                   </SoftButton>
                 </SoftBox>
