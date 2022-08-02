@@ -7,7 +7,7 @@ import SoftTypography from "components/SoftTypography";
 
 // Soft UI Dashboard PRO React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import DashboardNavbar from "examples/Navbar";
 import DataTable from "examples/Tables/DataTable";
 
 // Data

@@ -25,7 +25,7 @@ import {
   navbarContainer,
   navbarRow,
   navbarIconButton,
-} from "examples/Navbars/DashboardNavbar/styles";
+} from "examples/Navbar/styles";
 
 // Soft UI Dashboard PRO React context
 import { useSoftUIController, setTransparentNavbar } from "context";

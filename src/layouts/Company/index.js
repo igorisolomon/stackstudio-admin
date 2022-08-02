@@ -15,7 +15,7 @@ import SoftSelect from "components/SoftSelect";
 // Soft UI Dashboard PRO React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // import Navbar from "components/Navbar";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import DashboardNavbar from "examples/Navbar";
 
 import ReactQuill from "react-quill";
 

@@ -6,7 +6,7 @@ import SoftInput from "components/SoftInput";
 import SoftSelect from "components/SoftSelect";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import DashboardNavbar from "examples/Navbar";
 import React from "react";
 
 import ReactQuill from "react-quill";
