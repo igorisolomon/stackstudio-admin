@@ -53,6 +53,32 @@ function Intro() {
     fetchAbout();
   }, []);
 
+  const quillFormat = {
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+        ["link", "image"],
+        ["clean"],
+      ],
+    },
+
+    formats: [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "blockquote",
+      "list",
+      "bullet",
+      "indent",
+      "link",
+      "image",
+    ],
+  };
+
   const handleBlog = (content, delta, source, editor) => {
     // get state
     const company = { ...about };
@@ -141,6 +167,8 @@ function Intro() {
                   <div style={{ minHeight: 300 }}>
                     <ReactQuill
                       style={{ minHeight: 300 }}
+                      modules={quillFormat.modules}
+                      formats={quillFormat.formats}
                       value={about.intro_description_html}
                       onChange={handleBlog}
                       readOnly={disable}

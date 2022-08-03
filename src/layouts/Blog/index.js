@@ -45,6 +45,32 @@ const CreateBlog = () => {
     }
   }, []);
 
+  const quillFormat = {
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+        ["link", "image"],
+        ["clean"],
+      ],
+    },
+
+    formats: [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "blockquote",
+      "list",
+      "bullet",
+      "indent",
+      "link",
+      "image",
+    ],
+  };
+
   const handleBlog = (content, delta, source, editor) => {
     // get state
     const initialBlog = { ...blog };
@@ -172,6 +198,8 @@ const CreateBlog = () => {
                   <div style={{ minHeight: 300 }}>
                     <ReactQuill
                       style={{ minHeight: 300 }}
+                      modules={quillFormat.modules}
+                      formats={quillFormat.formats}
                       value={blog.body_html}
                       onChange={handleBlog}
                     />
