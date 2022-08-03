@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { ThreeDots } from "react-loader-spinner";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -19,6 +18,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
 
 import ReactQuill from "react-quill";
+import { ThreeDots } from "react-loader-spinner";
 import { fetchData, updateData } from "shared/data";
 
 const Company = () => {

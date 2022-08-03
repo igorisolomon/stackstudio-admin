@@ -10,7 +10,7 @@ const data = (row) => {
 
   const new_row = row.map((item) => {
     item["published_date"] = formatDate(item["published_date"]);
-    item["action"] = <ActionCell />;
+    item["action"] = <ActionCell id={item.id} />;
     return item;
   });
 

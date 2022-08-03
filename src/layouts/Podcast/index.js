@@ -7,11 +7,12 @@ import SoftSelect from "components/SoftSelect";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ReactQuill from "react-quill";
-import { useNavigate } from "react-router-dom";
-import { postData } from "shared/data";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
+import { fetchData, postData, updateData } from "shared/data";
 
 const CreatePodcast = () => {
   const samplePodcast = {
@@ -24,7 +25,26 @@ const CreatePodcast = () => {
   };
 
   const navigate = useNavigate();
+  const { pathname: path } = useLocation();
+  const pathArr = path.split("/");
+  const isEdit = pathArr.includes("edit");
+  const id = pathArr.at(-1);
+
   const [podcast, setPodcast] = useState(samplePodcast);
+
+  useEffect(() => {
+    // if edit
+    // get podcast
+    if (isEdit) {
+      // fetch podcast
+      const fetchPodcast = async () => {
+        const { data: podcast } = await fetchData(`v1/admin/podcast/${id}`);
+
+        setPodcast({ ...podcast });
+      };
+      fetchPodcast();
+    }
+  }, []);
 
   const handleBody = (content, delta, source, editor) => {
     // get state
@@ -57,12 +77,32 @@ const CreatePodcast = () => {
   };
 
   const handleSubmit = () => {
-    postData("v1/admin/podcast/", { ...podcast }).then((res) => {
-      navigate("/podcasts/podcast");
-    });
+    if (isEdit) {
+      updateData(`v1/admin/podcast/${id}/`, { ...podcast }).then((res) => {
+        navigate("/podcasts/podcast");
+      });
+    } else {
+      postData("v1/admin/podcast/", { ...podcast }).then((res) => {
+        navigate("/podcasts/podcast");
+      });
+    }
   };
 
-  return (
+  const showLoader = (
+    <div className="App-centralize">
+      <ThreeDots
+        height="80"
+        width="80"
+        radius="9"
+        color="#000000"
+        ariaLabel="three-dots-loading"
+        wrapperStyle={{}}
+        visible={true}
+      />
+    </div>
+  );
+
+  const loadPage = (
     <DashboardLayout>
       <DashboardNavbar />
       {/* <Navbar /> */}
@@ -152,7 +192,7 @@ const CreatePodcast = () => {
 
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
                   <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
-                    Create
+                  {isEdit ? "Edit" : "Create"}
                   </SoftButton>
                 </SoftBox>
               </SoftBox>
@@ -162,6 +202,8 @@ const CreatePodcast = () => {
       </SoftBox>
     </DashboardLayout>
   );
+
+  return <>{!isEdit || podcast.body_html ? loadPage : showLoader}</>;
 };
 
 export default CreatePodcast;

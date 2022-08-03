@@ -55,8 +55,20 @@ const routes = [
     noCollapse: true,
   },
   {
+    key: "editBlog",
+    route: "/blogs/blog/edit/:id",
+    component: <CreateBlog />,
+    noCollapse: true,
+  },
+  {
     key: "createPodcast",
     route: "/podcasts/podcast/create",
+    component: <CreatePodcast />,
+    noCollapse: true,
+  },
+  {
+    key: "editPodcast",
+    route: "/podcasts/podcast/edit/:id",
     component: <CreatePodcast />,
     noCollapse: true,
   },

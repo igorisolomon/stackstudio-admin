@@ -10,8 +10,9 @@ import DashboardNavbar from "examples/Navbar";
 import React, { useEffect, useState } from "react";
 
 import ReactQuill from "react-quill";
-import { useNavigate } from "react-router-dom";
-import { postData } from "shared/data";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
+import { fetchData, postData, updateData } from "shared/data";
 
 const CreateBlog = () => {
   const sampleBlog = {
@@ -22,18 +23,27 @@ const CreateBlog = () => {
     body: "",
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { pathname: path } = useLocation();
+  const pathArr = path.split("/");
+  const isEdit = pathArr.includes("edit");
+  const id = pathArr.at(-1);
+
   const [blog, setBlog] = useState(sampleBlog);
 
-  // useEffect(() => {
-  //   // fetch blog
-  //   const fetchBlog = async () => {
-  //     const { data: blog } = await fetchData("v1/admin/blog/");
+  useEffect(() => {
+    // if edit
+    // get blog
+    if (isEdit) {
+      // fetch blog
+      const fetchBlog = async () => {
+        const { data: blog } = await fetchData(`v1/admin/blog/${id}`);
 
-  //     setBlog({ ...blog });
-  //   };
-  //   fetchBlog();
-  // }, []);
+        setBlog({ ...blog });
+      };
+      fetchBlog();
+    }
+  }, []);
 
   const handleBlog = (content, delta, source, editor) => {
     // get state
@@ -58,7 +68,7 @@ const CreateBlog = () => {
     setBlog({ ...initialState });
   };
 
-  const handleCheck = ({ target }) => {
+  const handleCheck = () => {
     const initialState = { ...blog };
     initialState.is_published = !initialState.is_published;
 
@@ -66,12 +76,32 @@ const CreateBlog = () => {
   };
 
   const handleSubmit = () => {
-    postData('v1/admin/blog/', {...blog}).then((res) => {
-      navigate('/blogs/blog')
-    });
+    if (isEdit) {
+      updateData(`v1/admin/blog/${id}/`, { ...blog }).then((res) => {
+        navigate("/blogs/blog");
+      });
+    } else {
+      postData("v1/admin/blog/", { ...blog }).then((res) => {
+        navigate("/blogs/blog");
+      });
+    }
   };
 
-  return (
+  const showLoader = (
+    <div className="App-centralize">
+      <ThreeDots
+        height="80"
+        width="80"
+        radius="9"
+        color="#000000"
+        ariaLabel="three-dots-loading"
+        wrapperStyle={{}}
+        visible={true}
+      />
+    </div>
+  );
+
+  const loadPage = (
     <DashboardLayout>
       <DashboardNavbar />
       {/* <Navbar /> */}
@@ -95,11 +125,7 @@ const CreateBlog = () => {
                       Title
                     </SoftTypography>
                   </SoftBox>
-                  <SoftInput
-                    name="title"
-                    value={blog.title}
-                    onChange={handleText}
-                  />
+                  <SoftInput name="title" value={blog.title} onChange={handleText} />
 
                   <Grid container spacing={3}>
                     <Grid item xs={6}>
@@ -144,14 +170,18 @@ const CreateBlog = () => {
                   </SoftBox>
 
                   <div style={{ minHeight: 300 }}>
-                    <ReactQuill style={{ minHeight: 300 }} value={blog.body_html} onChange={handleBlog} />
+                    <ReactQuill
+                      style={{ minHeight: 300 }}
+                      value={blog.body_html}
+                      onChange={handleBlog}
+                    />
                   </div>
                   {/* <SoftInput /> */}
                 </SoftBox>
 
                 <SoftBox display="flex" justifyContent="flex-end" mt={3}>
                   <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
-                    create
+                    {isEdit ? "Edit" : "Create"}
                   </SoftButton>
                 </SoftBox>
               </SoftBox>
@@ -161,6 +191,8 @@ const CreateBlog = () => {
       </SoftBox>
     </DashboardLayout>
   );
+
+  return <>{!isEdit || blog.body_html ? loadPage : showLoader}</>;
 };
 
 export default CreateBlog;
