@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 // react-router-dom components
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 // Soft UI Dashboard PRO React components
 import SoftBox from "components/SoftBox";
@@ -17,7 +17,8 @@ import { login } from "shared/auth";
 import SoftSnackbar from "components/SoftSnackbar";
 
 function Signin() {
-  const navigate = useNavigate()
+  const token = localStorage.getItem("stackstudioToken");
+  const navigate = useNavigate();
 
   const [state, setState] = useState({ username: "", password: "" });
   const [successSB, setSuccessSB] = useState(false);
@@ -65,10 +66,7 @@ function Signin() {
 
   const handleSubmit = async () => {
     const response = await login({ ...state });
-    response ? (
-      openSuccessSB(),
-      navigate('/')
-      ) : openErrorSB();
+    response ? (openSuccessSB(), navigate("/company/about")) : openErrorSB();
   };
 
   return (
@@ -81,6 +79,7 @@ function Signin() {
         description: "",
       }}
     >
+      {token && <Navigate to="/company/about" replace={true} />}
       <SoftBox component="form" role="form">
         <SoftBox mb={2}>
           <SoftInput

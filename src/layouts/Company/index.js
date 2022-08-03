@@ -20,6 +20,8 @@ import DashboardNavbar from "examples/Navbar";
 import ReactQuill from "react-quill";
 import { ThreeDots } from "react-loader-spinner";
 import { fetchData, updateData } from "shared/data";
+import { logout } from "shared/auth";
+import { useNavigate } from "react-router-dom";
 
 const Company = () => {
   const aboutSample = {
@@ -38,6 +40,8 @@ const Company = () => {
     featured_podcast: [],
   };
 
+  const navigate = useNavigate();
+
   const [about, setAbout] = useState(aboutSample);
   const [podcasts, setPodcasts] = useState([]);
   const [disable, setDisable] = useState(true);
@@ -46,11 +50,16 @@ const Company = () => {
   useEffect(() => {
     // fetch about
     const fetchAbout = async () => {
-      const { data: company } = await fetchData("v1/admin/about/");
-      const { data: podcasts } = await fetchData("v1/admin/podcast/");
+      try {
+        const { data: company } = await fetchData("v1/admin/about/");
+        const { data: podcasts } = await fetchData("v1/admin/podcast/");
 
-      setAbout({ ...company });
-      setPodcasts(podcasts);
+        setAbout({ ...company });
+        setPodcasts(podcasts);
+      } catch (error) {
+        logout();
+        navigate("/signin");
+      }
     };
     fetchAbout();
   }, []);
@@ -88,8 +97,7 @@ const Company = () => {
       setEdit("Edit");
 
       // updateServer
-      updateData(`v1/admin/about/${about.id}/`, { ...about }).then((res) => console.log(res));
-      // console.log(about);
+      updateData(`v1/admin/about/${about.id}/`, { ...about }).then((res) => {});
     }
   };
 
