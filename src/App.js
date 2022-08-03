@@ -33,7 +33,7 @@ import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "contex
 import "./App.css"
 
 // Images
-import brand from "assets/images/logo-ct.png";
+import brand from "assets/images/icon.png";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -127,7 +127,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={brand}
-            brandName="Soft UI Dashboard PRO"
+            brandName="Stack Studio"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
