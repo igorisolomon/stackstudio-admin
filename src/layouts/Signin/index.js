@@ -73,7 +73,8 @@ function Signin() {
         openSuccessSB();
         localStorage.setItem("stackstudioToken", data.token);
         // console.log(data.token);
-        navigate("/company/about");
+        // navigate("/company/about");
+        window.location.href = "https://admin.stackstud.io/company/about"
       });
     } catch (error) {
       openErrorSB();
