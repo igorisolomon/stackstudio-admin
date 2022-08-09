@@ -71,6 +71,7 @@ function Signin() {
     try {
       await login({ ...state }).then(({data}) => {
         localStorage.setItem("stackstudioToken", data.token);
+        console.log(data.token);
         openSuccessSB();
         navigate("/company/about");
       });
