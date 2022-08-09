@@ -78,6 +78,12 @@ const routes = [
     component: <Signin />,
     noCollapse: true,
   },
+  {
+    key: "def",
+    route: "*",
+    component: <Signin />,
+    noCollapse: true,
+  },
 ];
 
 export default routes;
