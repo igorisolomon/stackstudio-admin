@@ -59,8 +59,8 @@ const Company = () => {
         setAbout({ ...company });
         setPodcasts(podcasts);
       } catch (error) {
-        logout()
-        navigate("/signin")
+        // logout()
+        // navigate("/signin")
       }
     };
 

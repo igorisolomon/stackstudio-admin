@@ -51,8 +51,8 @@ function Intro() {
 
         setAbout({ ...company });
       } catch (error) {
-        logout();
-        navigate("/signin");
+        // logout();
+        // navigate("/signin");
       }
     };
     if (token) fetchAbout();
