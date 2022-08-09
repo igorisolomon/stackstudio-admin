@@ -42,6 +42,8 @@ const Company = () => {
 
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("stackstudioToken");
+
   const [about, setAbout] = useState(aboutSample);
   const [podcasts, setPodcasts] = useState([]);
   const [disable, setDisable] = useState(true);
@@ -57,12 +59,17 @@ const Company = () => {
         setAbout({ ...company });
         setPodcasts(podcasts);
       } catch (error) {
-        logout();
-        navigate("/signin");
+        logout()
+        navigate("/signin")
       }
     };
-    fetchAbout();
-  }, []);
+
+    if (token) fetchAbout();
+
+    // console.log(about);
+
+    // token ? fetchAbout() : (logout(), navigate("/signin"));
+  }, [token]);
 
   const quillFormat = {
     modules: {
@@ -314,7 +321,9 @@ const Company = () => {
     </DashboardLayout>
   );
 
-  return <>{about.about && podcasts[0] ? loadPage : showLoader}</>;
+  // return <>{about.about && podcasts[0] ? loadPage : showLoader}</>;
+  return <>{about.name ? loadPage : showLoader}</>;
+  // return <>{loadPage}</>;
 };
 
 export default Company;

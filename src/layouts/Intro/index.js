@@ -38,6 +38,7 @@ function Intro() {
     featured_podcast: [],
   };
 
+  const token = localStorage.getItem("stackstudioToken");
   const [about, setAbout] = useState(aboutSample);
   const [disable, setDisable] = useState(true);
   const [edit, setEdit] = useState("edit");
@@ -45,13 +46,17 @@ function Intro() {
   useEffect(() => {
     // fetch About
     const fetchAbout = async () => {
-      const { data: company } = await fetchData("v1/admin/about/");
-      const { data: podcasts } = await fetchData("v1/admin/podcast/");
+      try {
+        const { data: company } = await fetchData("v1/admin/about/");
 
-      setAbout({ ...company });
+        setAbout({ ...company });
+      } catch (error) {
+        logout();
+        navigate("/signin");
+      }
     };
-    fetchAbout();
-  }, []);
+    if (token) fetchAbout();
+  }, [token]);
 
   const quillFormat = {
     modules: {
@@ -190,7 +195,9 @@ function Intro() {
     </DashboardLayout>
   );
 
-  return <>{about.about ? loadPage : showLoader}</>;
+  // return <>{about.about ? loadPage : showLoader}</>;
+  return <>{about.intro_description_html ? loadPage : showLoader}</>;
+  // return <>{loadPage}</>;
 }
 
 export default Intro;

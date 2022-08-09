@@ -65,8 +65,18 @@ function Signin() {
   };
 
   const handleSubmit = async () => {
-    const response = await login({ ...state });
-    response ? (openSuccessSB(), navigate("/company/about")) : openErrorSB();
+    // const response = await login({ ...state });
+    // response ? (openSuccessSB(), navigate("/company/about")) : openErrorSB();
+
+    try {
+      await login({ ...state }).then(({data}) => {
+        localStorage.setItem("stackstudioToken", data.token);
+        openSuccessSB();
+        navigate("/company/about");
+      });
+    } catch (error) {
+      openErrorSB();
+    }
   };
 
   return (
