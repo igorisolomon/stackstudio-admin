@@ -19,3 +19,7 @@ export const postData = async (path, payload) => {
 export const updateData = async (path, payload) => {
   return await axios.patch(`${URL}${path}`, payload, { headers });
 };
+
+export const deleteData = async (path) => {
+  return await axios.delete(`${URL}${path}`, { headers });
+};

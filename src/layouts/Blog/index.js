@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
-import { fetchData, postData, updateData } from "shared/data";
+import { fetchData, postData, updateData, deleteData } from "shared/data";
 
 const CreateBlog = () => {
   const sampleBlog = {
@@ -113,6 +113,12 @@ const CreateBlog = () => {
     }
   };
 
+  const handleDelete = () => {
+    deleteData(`v1/admin/blog/${id}/`).then((res) => {
+      navigate("/blogs/blog");
+    });
+  };
+
   const showLoader = (
     <div className="App-centralize">
       <ThreeDots
@@ -206,12 +212,22 @@ const CreateBlog = () => {
                   </div>
                   {/* <SoftInput /> */}
                 </SoftBox>
-
-                <SoftBox display="flex" justifyContent="flex-end" mt={3}>
-                  <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
-                    {isEdit ? "Edit" : "Create"}
-                  </SoftButton>
-                </SoftBox>
+                {isEdit ? (
+                  <SoftBox display="flex" justifyContent="space-between" mt={3}>
+                    <SoftButton variant="gradient" color="error" onClick={handleDelete}>
+                      Delete
+                    </SoftButton>
+                    <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
+                      Edit
+                    </SoftButton>
+                  </SoftBox>
+                ) : (
+                  <SoftBox display="flex" justifyContent="flex-end" mt={3}>
+                    <SoftButton variant="gradient" color="info" onClick={handleSubmit}>
+                      {isEdit ? "Edit" : "Create"}
+                    </SoftButton>
+                  </SoftBox>
+                )}
               </SoftBox>
             </Card>
           </Grid>
