@@ -51,6 +51,7 @@ const Company = () => {
 
   useEffect(() => {
     // fetch about
+    console.log(token);
     const fetchAbout = async () => {
       const { data: company } = await fetchData("v1/admin/about/");
       const { data: podcasts } = await fetchData("v1/admin/podcast/");
