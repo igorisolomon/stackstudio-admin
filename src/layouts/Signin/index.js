@@ -70,9 +70,9 @@ function Signin() {
 
     try {
       await login({ ...state }).then(({data}) => {
+        openSuccessSB();
         localStorage.setItem("stackstudioToken", data.token);
         // console.log(data.token);
-        openSuccessSB();
         navigate("/company/about");
       });
     } catch (error) {
@@ -90,7 +90,7 @@ function Signin() {
         description: "",
       }}
     >
-      {token && <Navigate to="/company/about" replace={true} />}
+      {/* {token && <Navigate to="/company/about" replace={true} />} */}
       <SoftBox component="form" role="form">
         <SoftBox mb={2}>
           <SoftInput

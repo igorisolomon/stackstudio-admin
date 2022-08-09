@@ -58,6 +58,7 @@ const Company = () => {
 
       setAbout({ ...company });
       setPodcasts(podcasts);
+      console.log(company);
       // try {
       //   const { data: company } = await fetchData("v1/admin/about/");
       //   const { data: podcasts } = await fetchData("v1/admin/podcast/");
