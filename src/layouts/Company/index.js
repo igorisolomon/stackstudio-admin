@@ -52,19 +52,26 @@ const Company = () => {
   useEffect(() => {
     // fetch about
     const fetchAbout = async () => {
-      try {
-        const { data: company } = await fetchData("v1/admin/about/");
-        const { data: podcasts } = await fetchData("v1/admin/podcast/");
+      const { data: company } = await fetchData("v1/admin/about/");
+      const { data: podcasts } = await fetchData("v1/admin/podcast/");
 
-        setAbout({ ...company });
-        setPodcasts(podcasts);
-      } catch (error) {
-        // logout()
-        // navigate("/signin")
-      }
+      setAbout({ ...company });
+      setPodcasts(podcasts);
+      // try {
+      //   const { data: company } = await fetchData("v1/admin/about/");
+      //   const { data: podcasts } = await fetchData("v1/admin/podcast/");
+
+      //   setAbout({ ...company });
+      //   setPodcasts(podcasts);
+      // } catch (error) {
+      //   // logout()
+      //   // navigate("/signin")
+      // }
     };
 
-    if (token) fetchAbout();
+    fetchAbout()
+
+    // if (token) fetchAbout();
 
     // console.log(about);
 
