@@ -196,7 +196,7 @@ function Intro() {
   );
 
   // return <>{about.about ? loadPage : showLoader}</>;
-  return <>{about.intro_description_html ? loadPage : showLoader}</>;
+  return <>{about.intro_description_html && token ? loadPage : showLoader}</>;
   // return <>{loadPage}</>;
 }
 

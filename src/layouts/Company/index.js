@@ -322,7 +322,7 @@ const Company = () => {
   );
 
   // return <>{about.about && podcasts[0] ? loadPage : showLoader}</>;
-  return <>{about.name ? loadPage : showLoader}</>;
+  return <>{about.name && token ? loadPage : showLoader}</>;
   // return <>{loadPage}</>;
 };
 
